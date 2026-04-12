@@ -8,7 +8,7 @@ set -euo pipefail
 #   -h  Show this help
 
 SRC="$HOME/Pictures"
-DEST="/Volumes/Photo/Photo"
+DEST="/Volumes/Photos/Photos"
 
 DRY_RUN=false
 VERBOSE=false
