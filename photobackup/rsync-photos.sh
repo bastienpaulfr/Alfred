@@ -34,7 +34,7 @@ if [[ ! -d "$DEST" ]]; then
 fi
 
 # Build rsync flags
-RSYNC_OPTS=(-a --delete --progress)
+RSYNC_OPTS=(-a --delete --progress --exclude='.DS_Store' --exclude='Thumbs.db' --exclude='._*')
 $DRY_RUN && RSYNC_OPTS+=(--dry-run)
 $VERBOSE && RSYNC_OPTS+=(-v)
 
