@@ -34,7 +34,7 @@ if [[ ! -d "$DEST" ]]; then
 fi
 
 # Build rsync flags
-RSYNC_OPTS=(-a --progress)
+RSYNC_OPTS=(-a --delete --progress)
 $DRY_RUN && RSYNC_OPTS+=(--dry-run)
 $VERBOSE && RSYNC_OPTS+=(-v)
 
@@ -45,7 +45,7 @@ for dir in "$SRC"/[0-9][0-9][0-9][0-9]; do
     name=$(basename "$dir")
     echo "Syncing $name..."
     rsync "${RSYNC_OPTS[@]}" "$dir/" "$DEST/$name/"
-    ((synced++))
+    ((++synced))
 done
 
 if [[ $synced -eq 0 ]]; then
