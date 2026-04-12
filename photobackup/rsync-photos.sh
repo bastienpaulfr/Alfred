@@ -38,14 +38,23 @@ RSYNC_OPTS=(-a --delete --progress)
 $DRY_RUN && RSYNC_OPTS+=(--dry-run)
 $VERBOSE && RSYNC_OPTS+=(-v)
 
-# Sync each year folder
+# Sync each subfolder within each year folder individually.
+# This ensures destination-only folders (e.g. "Baptème de Clément") are never
+# deleted — only the content of matching subfolders is mirrored.
 synced=0
-for dir in "$SRC"/[0-9][0-9][0-9][0-9]; do
-    [[ -d "$dir" ]] || continue
-    name=$(basename "$dir")
-    echo "Syncing $name..."
-    rsync "${RSYNC_OPTS[@]}" "$dir/" "$DEST/$name/"
-    ((++synced))
+for year_dir in "$SRC"/[0-9][0-9][0-9][0-9]; do
+    [[ -d "$year_dir" ]] || continue
+    year=$(basename "$year_dir")
+
+    for sub_dir in "$year_dir"/*/; do
+        [[ -d "$sub_dir" ]] || continue
+        sub=$(basename "$sub_dir")
+        dest_sub="$DEST/$year/$sub"
+        mkdir -p "$dest_sub"
+        echo "Syncing $year/$sub..."
+        rsync "${RSYNC_OPTS[@]}" "$sub_dir" "$dest_sub/"
+        ((++synced))
+    done
 done
 
 if [[ $synced -eq 0 ]]; then
